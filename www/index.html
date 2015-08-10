@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+        <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+        <script src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/loginScript.js"></script>
+        <script src="js/loggedInScript.js"></script>
+        <title>LookyFindMe</title>
+    </head>
+    <body>
+        <div data-role="page" id="homePage">
+            <div data-role="header">
+                <h1>Welcome</h1>
+            </div>
+
+            <div data-role="main" class="ui-content">
+                <a href="#login" class="ui-btn" > Login</a>
+                <a href="#subscribe" class="ui-btn" > Subscribe</a>
+                <a href="#" class="ui-btn" id="exit"> Exit</a>
+            </div>
+
+            <div data-role="footer">
+                <h1>LookyFindMe</h1>
+            </div>
+        </div>
+        <div data-role="page" id="login"> 
+            <div data-role="header">
+                <h1> LookyFindMe </h1>
+            </div>
+            <div data-role="main">
+                <form action="login.php" method="post"> 
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username">
+                    <label for="username">Password:</label>
+                    <input type="password" name="password" data-clear-btn="true" id="password">
+                </form>
+                <button class="ui-btn" id='loginBtn'>Login</button>
+                <label class="checkbox">
+                    <input type="checkbox" value="remember-me" id="remember_me"> Remember me
+                </label>
+            </div>
+            <div data-role="footer">
+                <a href="#homePage" class="ui-btn ui-icon-home"></a>
+            </div>
+            <div data-role="popup" data-transition="flip" id="loginPopup" data-position-to="window">
+                <p>Logged in.</p>
+            </div>
+        </div>
+        <div data-role="page" id="loggedIn">
+            <div data-role="header">
+                <h1> LookyFindMe </h1>
+            </div>
+            <div data-role="main">
+                <div id="options">
+                    <div id='whereami'> <button class="ui-btn" id='findMeBtn'> Find Me </button> </div>
+                    <div id='recentContacts'> <button class="ui-btn" id='recentContactsBtn'> Recent Contacts </button> </div>
+                    <div id="recentContactList">
+                        <ol data-role="listview" id="recentContactListView">
+                            <li><a href="#" id="danboy">Danny Boy</a></li>
+                            <li><a href="#" id="mambaby">Mamelo Baby</a></li>
+                        </ol>
+                    </div>
+                    <div id='viewAllContacts'> <button class="ui-btn" id='viewAllContactsBtn'> All Contacts </button> </div>
+                    <div id='settings'> <button class="ui-btn ui-icon-grid ui-btn-icon-left">Settings</button> </div>
+                </div>
+                <div id='map_container' style="width:640px; height:800px;">
+                    Could not load map because of no Internet connectivity. 
+                </div>
+            </div>
+            <div data-role="footer">
+
+            </div>
+        </div>
+        <div data-role="page" id="subscribe"> 
+            <div data-role="header">
+
+            </div>
+            <div data-role="main">
+
+            </div>
+            <div data-role='footer'>
+
+            </div>
+        </div>
+        <div data-role="page" id="viewContacts"> 
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
