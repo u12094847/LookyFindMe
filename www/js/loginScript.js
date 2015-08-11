@@ -1,3 +1,37 @@
+function UserLogin(username, password) {
+    this.username = username;
+    this.password = password;
+    this.toJSONString = function () {
+        return JSON.stringify(this);
+    };
+}
+;
+
+function login(user) {
+    jQuery.ajax({
+        type: "GET",
+        url: "http://localhost:49193/Contacts.svc/Login",
+        data: user.toJsonString(),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data, status, jqXHR) {
+
+            if (data.success === true) {
+                $("#loginPopup").popup("open");
+                setTimeout(function () {
+                    $("#loginPopup").popup("close");
+                }, 1000);
+            } else {
+                alert('Login failed');
+            }
+        },
+        error: function (jqXHR, status) {
+            alert('An unexpected error has occurred.');
+        }
+    });
+}
+;
+
 $(document).on("pagecreate", "#login", function () {
     if (localStorage.chkbx && localStorage.chkbx != '') {
         $('#remember_me').attr('checked', 'checked');
@@ -24,12 +58,13 @@ $(document).on("pagecreate", "#login", function () {
     });
 
     $("#loginBtn").on("click", function () {
-        $("#loginPopup").popup("open");
+
+        var username = $('#username').val();
+        var pass = $('#password').val();
         
-        setTimeout(function () {
-            $("#loginPopup").popup("close");
-        }, 2000);
-        
+        var user = new UserLogin(username, pass);
+        login(user);
+
         $.mobile.changePage('#loggedIn');
     });
 });

@@ -11,6 +11,7 @@
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
         <script src="js/loginScript.js"></script>
         <script src="js/loggedInScript.js"></script>
+        <script src="js/subscribeScript.js"></script>
         <title>LookyFindMe</title>
     </head>
     <body>
@@ -69,8 +70,7 @@
                     <div id='viewAllContacts'> <button class="ui-btn" id='viewAllContactsBtn'> All Contacts </button> </div>
                     <div id='settings'> <button class="ui-btn ui-icon-grid ui-btn-icon-left">Settings</button> </div>
                 </div>
-                <div id='map_container' style="width:640px; height:800px;">
-                    Could not load map because of no Internet connectivity. 
+                <div id='map_container' style="width:640px; height:800px;"> 
                 </div>
             </div>
             <div data-role="footer">
@@ -81,8 +81,27 @@
             <div data-role="header">
 
             </div>
-            <div data-role="main">
-
+            <div data-role="main" class="ui-content">
+                <form method="post" action="">
+                    <div class="ui-field-contain">
+                        <label for="Name">Name:</label><input type="text" name="text" id="name" value="" placeholder="What's Your Name?">
+                    </div>
+                    <div class="ui-field-contain">
+                        <label for="Surname">Surname</label><input type="text" name="text" id="surname" value="" placeholder="What's Your Surname?">
+                    </div>
+                    <div class="ui-field-contain">
+                        <label for="Username">Username:</label><input type="text" name="text" id="usernameSub" value="" placeholder="Enter username">
+                    </div>
+                    <div class="ui-field-contain">
+                        <label for="Password">Password:</label><input type="password" name="text" id="passwordSub" value="" placeholder="Enter password">
+                    </div>
+                </form>
+                <div>
+                    <button class="ui-btn" id='subscribeBtn'>Subscribe</button>
+                </div>
+                <div data-role="popup" data-transition="flip" id="subscribePopup" data-position-to="window">
+                    <p>Subscribed.</p>
+                </div>
             </div>
             <div data-role='footer'>
 
