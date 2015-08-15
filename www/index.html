@@ -12,6 +12,7 @@
         <script src="js/loginScript.js"></script>
         <script src="js/loggedInScript.js"></script>
         <script src="js/subscribeScript.js"></script>
+        <script src="js/homeScript.js"></script>
         <title>LookyFindMe</title>
     </head>
     <body>
@@ -34,8 +35,13 @@
             <div data-role="header">
                 <h1> LookyFindMe </h1>
             </div>
+<<<<<<< HEAD
             <div data-role="main">
                 <form method="get" id='loginBtn' onsubmit='login();'> 
+=======
+            <div data-role="main" class="ui-content">
+                <form method="post"> 
+>>>>>>> origin/master
                     <label for="username">Username:</label>
                     <input type="text" name="username" id="username">
                     <label for="username">Password:</label>
@@ -44,7 +50,7 @@
                 </form>
                 <!--<button class="ui-btn" id='loginBtn'>Login</button>-->
                 <label class="checkbox">
-                    <input type="checkbox" value="remember-me" id="remember_me"> Remember me
+                    <input type="checkbox" value="remember-me" id="remember_me" name="Remember me">  
                 </label>
             </div>
             <div data-role="footer">

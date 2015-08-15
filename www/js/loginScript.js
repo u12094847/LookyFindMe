@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 function UserLogin(username, password) {
     this.username = username;
     this.password = password;
@@ -32,6 +33,8 @@ function login(user) {
 }
 ;
 
+=======
+>>>>>>> origin/master
 $(document).on("pagecreate", "#login", function () {
     
     if (localStorage.chkbx && localStorage.chkbx != '') {
@@ -69,5 +72,43 @@ $(document).on("pagecreate", "#login", function () {
 
         $.mobile.changePage('#loggedIn');
     });
+<<<<<<< HEAD
     
 });
+=======
+});
+
+function UserLogin(username, password) {
+    this.username = username;
+    this.password = password;
+    this.toJSONString = function () {
+        return JSON.stringify(this);
+    };
+}
+;
+
+function login(user) {
+    jQuery.ajax({
+        type: "GET",
+        url: "http://localhost:8001/login",
+        data: user.toJSONString(),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data, status, jqXHR) {
+
+            if (data.success === true) {
+                $("#loginPopup").popup("open");
+                setTimeout(function () {
+                    $("#loginPopup").popup("close");
+                }, 1000);
+            } else {
+                alert('Login failed');
+            }
+        },
+        error: function (jqXHR, status) {
+            alert('An unexpected error has occurred.');
+        }
+    });
+}
+;
+>>>>>>> origin/master
