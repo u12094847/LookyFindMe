@@ -35,13 +35,14 @@
                 <h1> LookyFindMe </h1>
             </div>
             <div data-role="main">
-                <form action="login.php" method="post"> 
+                <form method="get" id='loginBtn' onsubmit='login();'> 
                     <label for="username">Username:</label>
                     <input type="text" name="username" id="username">
                     <label for="username">Password:</label>
                     <input type="password" name="password" data-clear-btn="true" id="password">
+                    <button class="ui-btn" id='loginBtn'>Login</button>
                 </form>
-                <button class="ui-btn" id='loginBtn'>Login</button>
+                <!--<button class="ui-btn" id='loginBtn'>Login</button>-->
                 <label class="checkbox">
                     <input type="checkbox" value="remember-me" id="remember_me"> Remember me
                 </label>

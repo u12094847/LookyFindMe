@@ -10,13 +10,13 @@ function UserLogin(username, password) {
 function login(user) {
     jQuery.ajax({
         type: "GET",
-        url: "http://localhost:49193/Contacts.svc/Login",
-        data: user.toJsonString(),
+        url: "http://localhost:8000/login",
+        data: user.toJSONString(),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (data, status, jqXHR) {
 
-            if (data.success === true) {
+            if (data === true) {
                 $("#loginPopup").popup("open");
                 setTimeout(function () {
                     $("#loginPopup").popup("close");
@@ -33,6 +33,7 @@ function login(user) {
 ;
 
 $(document).on("pagecreate", "#login", function () {
+    
     if (localStorage.chkbx && localStorage.chkbx != '') {
         $('#remember_me').attr('checked', 'checked');
         $('#username').val(localStorage.usrname);
@@ -59,6 +60,7 @@ $(document).on("pagecreate", "#login", function () {
 
     $("#loginBtn").on("click", function () {
 
+        alert("tsek");
         var username = $('#username').val();
         var pass = $('#password').val();
         
@@ -67,4 +69,5 @@ $(document).on("pagecreate", "#login", function () {
 
         $.mobile.changePage('#loggedIn');
     });
+    
 });
