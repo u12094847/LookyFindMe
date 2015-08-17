@@ -1,5 +1,25 @@
 $(document).on("pagecreate", "#loggedIn", function () {
-    $('#recentContactList').hide();
+
+    var username = $.getCookie("username");
+
+    jQuery.ajax({
+        type: "POST",
+        url: "http://localhost/",
+        data: {method: "getfriends", username: username},
+        success: function (data, status, jqXHR) {
+
+            if (data.success === true) {
+                jQuery.each(data.data, function (index, item) {
+                
+                });
+            } else {
+                $('#viewAllContacts').append('<p> No friends. </p>');
+            }
+        },
+        error: function (jqXHR, status) {
+            alert('An unexpected error has occurred.');
+        }
+    });
 
     $('#findMeBtn').click(function () {
 
@@ -40,34 +60,10 @@ $(document).on("pagecreate", "#loggedIn", function () {
         };
 
         function onError(error) {
-            //no device doesn't support geolocation
             document.getElementById('map_container').innerHTML = 'No Geolocation Support.';
 
-
-            /*if (err.code == 0) {
-             // Unknown error
-             }
-             if (err.code == 1) {
-             // Access denied by user
-             }
-             if (err.code == 2) {
-             // Position unavailable
-             }
-             if (err.code == 3) {
-             // Timed out
-             }*/
         }
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
-    });
-
-    $('#recentContactsBtn').click(function () {
-        $('#recentContactList').slideDown('fast', function () {
-            $('#recentContactList').show();
-        });
-    });
-
-    $('#recentContactListView li a').click(function () {
-        var id = $(this).attr('id');
     });
 });
