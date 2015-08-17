@@ -1,10 +1,9 @@
 <?php
 
 header('Access-Control-Allow-Origin: *');
-
 include './connectToDB.php';
 
-/* function getFriends() {
+/*function getFriends() {
   if ($this->get_request_method() != "POST") {
   $this->response('', 406);
   }
