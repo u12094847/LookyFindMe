@@ -40,7 +40,7 @@ function UserLogin(username, password) {
 function login(user) {
     jQuery.ajax({
         type: "POST",
-        url: "http://localhost/",
+        url: "http://localhost:8001/",
         data: {method: "login", username: user.username, password: user.password},
         success: function (data, status, jqXHR) {
 

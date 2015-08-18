@@ -4,7 +4,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
 
     jQuery.ajax({
         type: "POST",
-        url: "http://localhost/",
+        url: "http://localhost:8001/",
         data: {method: "getfriends", username: username},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
