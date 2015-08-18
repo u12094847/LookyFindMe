@@ -11,16 +11,15 @@ function userSubscribeDetails(name, surname, username, password) {
 
 function addSubscriber(user) {
     jQuery.ajax({
-        type: "ADD",
-        url: "http://localhost:49193/Contacts.svc/Add",
-        data: user.toJsonString(),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
+        type: "POST",
+        url: "http://localhost:8001/",
+        data: {method: "subscribe", username: user.username, password: user.password, name: user.name, surname: user.surname},
         success: function (data, status, jqXHR) {
-            $("#subscribePopup").popup("open");
-            setTimeout(function () {
-                $("#subscribePopup").popup("close");
-            }, 1000);
+            if (data.success === true) {
+                $.setCookie("username", user.username, 14);
+                $.mobile.changePage('#loggedIn');
+            } else {
+            }
         },
         error: function (jqXHR, status) {
             alert('An unexpected error has occurred.');
