@@ -209,6 +209,23 @@ if (isset($_POST['method'])) {
             $response['status'] = 404;
             $response['success'] = false;
         }
+    }else if (strcasecmp($method, 'subscribe') == 0 and isset($_POST['username']) and isset($_POST['password']) and isset($_POST['surname']) and isset($_POST['name'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $surname = $_POST['surname'];
+        $name = $_POST['name'];
+
+        // Input validations
+        if (!empty($username)) {
+            //This SQL statement gets all the usernames for a person/user
+            $sql = mysqli_query($db, "INSERT INTO user (user_name,user_password,user_username,user_surname) values('$name','$password','$username', '$surname') ");
+            $response['status'] = 200;
+            $response['success'] = true;
+               
+        } else {
+            $response['status'] = 404;
+            $response['success'] = false;
+        }
     }
 }
 
