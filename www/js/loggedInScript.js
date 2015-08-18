@@ -7,10 +7,10 @@ $(document).on("pagecreate", "#loggedIn", function () {
         url: "http://localhost/",
         data: {method: "getfriends", username: username},
         success: function (data, status, jqXHR) {
-
             if (data.success === true) {
-                jQuery.each(data.data, function (index, item) {
-                
+                var obj = JSON.parse(data.data);
+                obj.forEach(function(item){
+                   $('#recentContactListView').append("<li><a href='#' class='ui-btn' id=" + item+  ">" + item + "</a></li>");
                 });
             } else {
                 $('#viewAllContacts').append('<p> No friends. </p>');
