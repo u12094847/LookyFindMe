@@ -195,8 +195,8 @@ if (isset($_POST['method'])) {
                     }
                     else
                     {
-                        $response['status'] = 404;
-                        $response['success'] = false;
+                        $response['status'] = 200;
+                        $response['success'] = true;
                     }
                 }
                 else
