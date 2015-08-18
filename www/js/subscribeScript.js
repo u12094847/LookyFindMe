@@ -19,10 +19,12 @@ function addSubscriber(user) {
                 $.setCookie("username", user.username, 14);
                 $.mobile.changePage('#loggedIn');
             } else {
+                $.mobile.changePage('#homePage');
             }
         },
         error: function (jqXHR, status) {
             alert('An unexpected error has occurred.');
+            $.mobile.changePage('#homePage');
         }
     });
 }

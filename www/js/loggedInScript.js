@@ -8,10 +8,14 @@ $(document).on("pagecreate", "#loggedIn", function () {
         data: {method: "getfriends", username: username},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
-                var obj = JSON.parse(data.data);
-                obj.forEach(function(item){
-                   $('#recentContactListView').append("<li><a href='#' class='ui-btn' id=" + item+  ">" + item + "</a></li>");
-                });
+                if (data.data === null) {
+                    $('#viewAllContacts').append('<p style="color:red;"> No friends. </p>');
+                } else {
+                    var obj = JSON.parse(data.data);
+                    obj.forEach(function (item) {
+                        $('#recentContactListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
+                    });
+                }
             } else {
                 $('#viewAllContacts').append('<p> No friends. </p>');
             }
