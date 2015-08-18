@@ -177,29 +177,33 @@ if (isset($_POST['method'])) {
         // Input validations
         if (!empty($username)) {
             //This SQL statement gets all the usernames for a person/user
-            $sql = mysqli_query($db, "SELECT mm.user_username
-                                        FROM user mm
-                                        INNER JOIN friend f ON f.friend_one = mm.user_id
-                                        INNER JOIN user m ON m.user_id = f.friend_two 
-                                        WHERE m.user_username = '$username'
-                                        UNION DISTINCT
-                                        SELECT mm.user_username
-                                        FROM user mm
-                                        INNER JOIN friend f ON f.friend_two = mm.user_id
-                                        INNER JOIN user m on m.user_id = f.friend_one
-                                        WHERE m.user_username = '$username'");
+            $sql = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$username'");
             if (mysqli_num_rows($sql) > 0) {
-                $jsonData = array();
+                if($result = mysqli_fetch_row($sql))
+                {
+                    $sql = mysqli_query($db,"SELECT friend_one FROM friend WHERE user_id='$result[0]' and friend_status = 3");
+                    if (mysqli_num_rows($sql) >0)
+                    {
+                        $jsonData = array();
                 
-                while($result = mysqli_fetch_row($sql)){
-                    $jsonData[] = $result;
+                        while($result = mysqli_fetch_row($sql)){
+                            $jsonData[] = $result;
+                        }
+                        $response['data'] = json_encode($jsonData);
+                        $response['success'] = true;
+                        $response['status'] = 200;
+                    }
+                    else
+                    {
+                        $response['status'] = 404;
+                        $response['success'] = false;
+                    }
                 }
-                $response['data'] = json_encode($jsonData);
-                $response['success'] = true;
-                $response['status'] = 200;
-            } else {
-                $response['status'] = 200;
-                $response['success'] = false;
+                else
+                {
+                    $response['status'] = 404;
+                    $response['success'] = false;
+                }
             }
         } else {
             $response['status'] = 404;

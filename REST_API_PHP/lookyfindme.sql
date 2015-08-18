@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 17, 2015 at 10:26 PM
+-- Generation Time: Aug 18, 2015 at 08:21 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -29,9 +29,18 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `friend` (
 `friend_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `friend_one` int(11) NOT NULL,
+  `friend_one` varchar(100) NOT NULL,
   `friend_status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `friend`
+--
+
+INSERT INTO `friend` (`friend_id`, `user_id`, `friend_one`, `friend_status`) VALUES
+(1, 2, 'dannyboy', 3),
+(2, 2, 'jimmy', 2),
+(3, 2, 'bobby', 1);
 
 -- --------------------------------------------------------
 
@@ -44,20 +53,19 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_name` varchar(25) NOT NULL,
   `user_password` varchar(25) NOT NULL,
   `user_username` varchar(25) NOT NULL,
-  `user_surname` varchar(25) NOT NULL,
-  `user_subscribed` tinyint(1) NOT NULL
+  `user_surname` varchar(25) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `user_name`, `user_password`, `user_username`, `user_surname`, `user_subscribed`) VALUES
-(1, 'Daniel', '123', 'dannyboy', 'Makgonta', 3),
-(2, 'Mamelo', '123', 'mamelo', 'Seopela', 3),
-(5, 'bobby', '123', 'bobby', 'man', 2),
-(6, 'alex', '123', 'alex', 'voss', 1),
-(7, 'jimmy', '123', 'jimmy', 'choo', 2);
+INSERT INTO `user` (`user_id`, `user_name`, `user_password`, `user_username`, `user_surname`) VALUES
+(1, 'Daniel', '123', 'dannyboy', 'Makgonta'),
+(2, 'Mamelo', '123', 'mamelo', 'Seopela'),
+(5, 'bobby', '123', 'bobby', 'man'),
+(6, 'alex', '123', 'alex', 'voss'),
+(7, 'jimmy', '123', 'jimmy', 'choo');
 
 --
 -- Indexes for dumped tables
@@ -83,12 +91,12 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `friend`
 --
 ALTER TABLE `friend`
-MODIFY `friend_id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `friend_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- Constraints for dumped tables
 --
