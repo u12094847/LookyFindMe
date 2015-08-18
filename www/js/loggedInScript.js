@@ -21,7 +21,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
             }
         },
         error: function (jqXHR, status) {
-            alert('An unexpected error has occurred.');
+            alert('An unexpected error has occurred. ' + status);
         }
     });
 

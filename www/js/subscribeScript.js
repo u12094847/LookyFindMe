@@ -3,11 +3,7 @@ function userSubscribeDetails(name, surname, username, password) {
     this.surname = surname;
     this.username = username;
     this.password = password;
-    this.toJSONString = function () {
-        return JSON.stringify(this);
-    };
-}
-;
+};
 
 function addSubscriber(user) {
     jQuery.ajax({
