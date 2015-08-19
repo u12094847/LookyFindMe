@@ -18,7 +18,7 @@
     </head>
     <body>
         <div data-role="page" id="homePage">
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
                 <h1>Welcome</h1>
             </div>
 
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div data-role="page" id="login"> 
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
                 <h1> LookyFindMe </h1>
             </div>
             <div data-role="main" class="ui-content">
@@ -59,26 +59,41 @@
             </div>
         </div>
         <div data-role="page" id="loggedIn">
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
                 <h1> LookyFindMe </h1>
             </div>
             <div data-role="main">
                 <div id="options">
                     <div id='whereami'> <button class="ui-btn" id='findMeBtn'> Find Me </button> </div>
                     <div id='viewAllContacts'> <button class="ui-btn" id='viewAllContactsBtn'> Friend List </button> </div>
-                    <ol data-role="listview" id="recentContactListView">
+                    <form class="ui-filterable">
+                        <input id="filterFriends" data-type="search">
+                    </form>
+                    <ol data-role="listview" id="recentContactListView" data-filter="true" data-input="#filterFriends">
+                    </ol>
+                    <div id='viewAllRequests'> <button class="ui-btn" id='viewAllRequestsBtn'> Requests </button> </div>
+                    <form class="ui-filterable">
+                        <input id="filterRequests" data-type="search">
+                    </form>
+                    <ol data-role="listview" id="recentRequestsListView" data-filter="true" data-input="#filterRequests">
+                    </ol>
+                    <div id='viewAllPending'> <button class="ui-btn" id='viewPendingBtn'> Pending </button> </div>
+                    <form class="ui-filterable">
+                        <input id="filterPending" data-type="search">
+                    </form>
+                    <ol data-role="listview" id="recentPendingListView" data-filter="true" data-input="#filterPending">
                     </ol>
                     <div id='settings'> <button class="ui-btn ui-icon-grid ui-btn-icon-left">Settings</button> </div>
                 </div>
                 <div id='map_container' style="width:640px; height:800px;"> 
                 </div>
             </div>
-            <div data-role="footer">
-
+            <div data-role="footer" data-position="fixed">
+                <div id='logout'> <button class="ui-btn ui-icon-recycle ui-btn-icon-left"  id='logoutBtn'> Sign out </button> </div>
             </div>
         </div>
         <div data-role="page" id="subscribe"> 
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
 
             </div>
             <div data-role="main" class="ui-content">

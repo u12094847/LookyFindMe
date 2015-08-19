@@ -1,7 +1,14 @@
 $(document).on("pagecreate", "#loggedIn", function () {
 
     var username = $.getCookie("username");
-
+    
+    alert(username);
+   
+    if(username === null || username === "" || !username){
+     $.mobile.changePage('#homePage');
+     return;
+    }
+    
     jQuery.ajax({
         type: "POST",
         url: "http://localhost:8001/",
@@ -12,7 +19,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
                     $('#viewAllContacts').append('<p style="color:red;"> No friends. </p>');
                 } else {
                     var obj = JSON.parse(data.data);
-                    obj.forEach(function (item) {
+                    obj.forEach(function (item) {  
                         $('#recentContactListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
                     });
                 }
@@ -24,6 +31,54 @@ $(document).on("pagecreate", "#loggedIn", function () {
             alert('An unexpected error has occurred. ' + status);
         }
     });
+
+    jQuery.ajax({
+        type: "POST",
+        url: "http://localhost:8001/",
+        data: {method: "getpending", username: username},
+        success: function (data, status, jqXHR) {
+            if (data.success === true) {
+                if (data.data === null) {
+                    $('#viewAllContacts').append('<p style="color:red;"> No pending friends. </p>');
+                } else {
+                    var obj = JSON.parse(data.data);
+                    obj.forEach(function (item) {
+                        $('#recentPendingListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
+                    });
+                }
+            } else {
+                $('#viewAllPending').append('<p> No pending friends. </p>');
+            }
+        },
+        error: function (jqXHR, status) {
+            alert('An unexpected error has occurred. ' + status);
+        }
+    });
+
+
+    jQuery.ajax({
+        type: "POST",
+        url: "http://localhost:8001/",
+        data: {method: "getrequests", username: username},
+        success: function (data, status, jqXHR) {
+            if (data.success === true) {
+                if (data.data === null) {
+                    $('#viewAllContacts').append('<p style="color:red;"> No requests. </p>');
+                } else {
+                    var obj = JSON.parse(data.data);
+                    obj.forEach(function (item) {
+                        $('#recentRequestsListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
+                    });
+                }
+            } else {
+                $('#viewAllContacts').append('<p> No requests. </p>');
+            }
+        },
+        error: function (jqXHR, status) {
+            alert('An unexpected error has occurred. ' + status);
+        }
+    });
+
 
     $('#findMeBtn').click(function () {
 
@@ -69,5 +124,15 @@ $(document).on("pagecreate", "#loggedIn", function () {
         }
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
+    });
+
+    $('#logoutBtn').click(function () {
+        $.setCookie("username", null, -1);
+        $.mobile.changePage('#homePage');
+    });
+    
+    $('recentContactListView').find('a').click(function(){
+        alert($(this).attr('id'));
+        $.mobile.changePage('#findFriendPage');
     });
 });
