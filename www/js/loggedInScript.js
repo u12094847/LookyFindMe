@@ -2,7 +2,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
 
     var username = $.getCookie("username");
     
-    if(username === null || username === "" || !username){
+    if(!username){
      $.mobile.changePage('#homePage');
      return;
     }
