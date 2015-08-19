@@ -26,6 +26,8 @@ $(document).on("pagecreate", "#login", function () {
     $("#loginBtn").on("click", function () {
         var username = $('#username').val().trim();
         var pass = $('#password').val().trim();
+        if (username === "" || pass === "")
+            return;
         var user = new UserLogin(username, pass);
         login(user);
     });
