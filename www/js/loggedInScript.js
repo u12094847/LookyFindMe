@@ -2,8 +2,6 @@ $(document).on("pagecreate", "#loggedIn", function () {
 
     var username = $.getCookie("username");
     
-    alert(username);
-   
     if(username === null || username === "" || !username){
      $.mobile.changePage('#homePage');
      return;
@@ -32,7 +30,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
         }
     });
 
-    jQuery.ajax({
+    /*jQuery.ajax({
         type: "POST",
         url: "http://localhost:8001/",
         data: {method: "getpending", username: username},
@@ -77,7 +75,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
         error: function (jqXHR, status) {
             alert('An unexpected error has occurred. ' + status);
         }
-    });
+    });*/
 
 
     $('#findMeBtn').click(function () {

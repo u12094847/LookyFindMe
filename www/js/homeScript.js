@@ -1,16 +1,10 @@
 $(document).on("pagebeforecreate", "#homePage", function () {
-    if ($.getCookie('username')) {
-        $.mobile.changePage('#loggedIn');
-        return;
-    }
     
-    if ($.getCookie('username') !== "") {
-        $.mobile.changePage('#loggedIn');
-        return;
-    }
+    var username = $.getCookie('username');  
     
-    if ($.getCookie('username') !== null) {
-        $.mobile.changePage('#loggedIn');
+    if (username === false) {
         return;
     }
+
+    $.mobile.changePage('#loggedIn');
 });
