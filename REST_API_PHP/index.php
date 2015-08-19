@@ -226,6 +226,68 @@ if (isset($_POST['method'])) {
             $response['status'] = 404;
             $response['success'] = false;
         }
+    }else if (strcasecmp($method, 'searchFriend') == 0 and isset($_POST['username'])) {
+        $username = $_POST['username'];
+
+        // Input validations
+        if (!empty($username)) {
+            //This SQL statement gets all the usernames for a person/user
+            $sql = mysqli_query($db, "SELECT user_username FROM user WHERE user_username like '%$username%' or user_name like '%$username%' or user_surname like '%$username%'");
+            if (mysqli_num_rows($sql) >0)
+            {
+                 $jsonData = array();
+                
+                while($result = mysqli_fetch_row($sql)){
+                    $jsonData[] = $result;
+                }
+                $response['data'] = json_encode($jsonData);
+                $response['success'] = true;
+                $response['status'] = 200;
+            }else {
+                    $response['status'] = 200;
+                    $response['success'] = true;
+                }
+        } else {
+            $response['status'] = 404;
+            $response['success'] = false;
+        }
+    }else if (strcasecmp($method, 'addFriend') == 0 and isset($_POST['username']) and isset($_POST['friend'])) {
+        $username = $_POST['username'];
+        $friend = $_POST['friend'];
+        // Input validations
+        if (!empty($username)) {
+            //This SQL statement gets all the usernames for a person/user
+            $sql = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$username'");
+            if (mysqli_num_rows($sql) > 0) {
+                if($result = mysqli_fetch_row($sql))
+                {
+                    $sql = mysqli_query($db,"INSERT INTO friend (user_id,friend_one,friend_status) values('$result[0]','$friend',2)");
+                    $sqli = mysqli_query($db,"SELECT user_id FROM user WHERE user_username='$friend");
+                    if (mysqli_num_rows($sqli) > 0)
+                    {
+                        if($result = mysqli_fetch_row($sql))
+                        {
+                            $sql = mysqli_query($db,"INSERT INTO friend (user_id,friend_one,friend_status) values('$result[0]','$username',1)");
+                        }
+                        $response['success'] = true;
+                        $response['status'] = 200;
+                    }
+                    else
+                    {
+                        $response['status'] = 200;
+                        $response['success'] = true;
+                    }
+                }
+                else
+                {
+                    $response['status'] = 404;
+                    $response['success'] = false;
+                }
+            }
+        } else {
+            $response['status'] = 404;
+            $response['success'] = false;
+        }
     }
 }
 
