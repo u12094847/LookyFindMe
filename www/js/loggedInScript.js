@@ -14,7 +14,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
         success: function (data, status, jqXHR) {
             if (data.success === true) {
                 if (data.data === null) {
-                    $('#viewAllContacts').append('<p style="color:red;"> No friends. </p>');
+                    $('#options').append('<p style="color:red;"> No friends. </p>');
                 } else {
                     var obj = JSON.parse(data.data);
                     obj.forEach(function (item) {  
@@ -22,7 +22,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
                     });
                 }
             } else {
-                $('#viewAllContacts').append('<p> No friends. </p>');
+                $('#options').append('<p> No friends. </p>');
             }
         },
         error: function (jqXHR, status) {
@@ -30,14 +30,14 @@ $(document).on("pagecreate", "#loggedIn", function () {
         }
     });
 
-    /*jQuery.ajax({
+    jQuery.ajax({
         type: "POST",
         url: "http://localhost:8001/",
-        data: {method: "getpending", username: username},
+        data: {method: "getPending", username: username},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
                 if (data.data === null) {
-                    $('#viewAllContacts').append('<p style="color:red;"> No pending friends. </p>');
+                    $('#options').append('<p style="color:red;"> No pending friends. </p>');
                 } else {
                     var obj = JSON.parse(data.data);
                     obj.forEach(function (item) {
@@ -45,7 +45,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
                     });
                 }
             } else {
-                $('#viewAllPending').append('<p> No pending friends. </p>');
+                $('#options').append('<p> No pending friends. </p>');
             }
         },
         error: function (jqXHR, status) {
@@ -57,11 +57,11 @@ $(document).on("pagecreate", "#loggedIn", function () {
     jQuery.ajax({
         type: "POST",
         url: "http://localhost:8001/",
-        data: {method: "getrequests", username: username},
+        data: {method: "getRequests", username: username},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
                 if (data.data === null) {
-                    $('#viewAllContacts').append('<p style="color:red;"> No requests. </p>');
+                    $('#options').append('<p style="color:red;"> No requests. </p>');
                 } else {
                     var obj = JSON.parse(data.data);
                     obj.forEach(function (item) {
@@ -69,13 +69,13 @@ $(document).on("pagecreate", "#loggedIn", function () {
                     });
                 }
             } else {
-                $('#viewAllContacts').append('<p> No requests. </p>');
+                $('#options').append('<p> No requests. </p>');
             }
         },
         error: function (jqXHR, status) {
             alert('An unexpected error has occurred. ' + status);
         }
-    });*/
+    });
 
 
     $('#findMeBtn').click(function () {

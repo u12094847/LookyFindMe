@@ -41,20 +41,20 @@ $(document).on("pagecreate", "#findFriendsView", function () {
 
         var friend = $.getCookie('friend').trim();
         var username = $.getCookie('username').trim();
-
+        
         jQuery.ajax({
             type: "POST",
             url: "http://localhost:8001/",
-            data: {method: "addFriend", username: username, friend: friend},
+            data: {method: "addFriend", username: "Mamelo", friend: "jimmy"},
             success: function (data, status, jqXHR) {
 
                 if (data.success === true) {
-                    $('friendConfirmBox').html("<p style='color:green;text-align:center'>Added.</p>");
+                    $('#friendConfirmBox').html("<p style='color:green;text-align:center'>Added.</p>");
                     setTimeout(function () {
                         $('#friendConfirmBox').html("").fadeOut();
                     }, 3000);
                 } else {
-                    $('friendConfirmBox').html("<p style='color:red;text-align:center'>Username exists</p>");
+                    $('#friendConfirmBox').html("<p style='color:red;text-align:center'>Username exists</p>");
                     setTimeout(function () {
                         $('#friendConfirmBox').html("").fadeOut();
                     }, 3000);
