@@ -316,9 +316,9 @@ if (isset($_POST['method'])) {
             if (mysqli_num_rows($sql) > 0) {
                 if ($result = mysqli_fetch_row($sql)) {
                     $sql = mysqli_query($db, "INSERT INTO friend (user_id,friend_one,friend_status) values('$result[0]','$friend',2)");
-                    $sqli = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$friend");
+                    $sqli = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$friend'");
                     if (mysqli_num_rows($sqli) > 0) {
-                        if ($result = mysqli_fetch_row($sql)) {
+                        if ($result = mysqli_fetch_row($sqli)) {
                             $sql = mysqli_query($db, "INSERT INTO friend (user_id,friend_one,friend_status) values('$result[0]','$username',1)");
                         }
                         $response['success'] = true;

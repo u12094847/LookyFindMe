@@ -51,6 +51,7 @@ $(document).on("pagecreate", "#findFriendsView", function () {
                 if (data.success === true) {
                     $('#friendConfirmBox').html("<p style='color:green;text-align:center'>Added.</p>");
                     setTimeout(function () {
+                        refreshPage();
                         $.mobile.changePage('#loggedIn');
                     }, 1500);
                 } else {
@@ -59,6 +60,7 @@ $(document).on("pagecreate", "#findFriendsView", function () {
                         $('#friendConfirmBox').html("").fadeOut();
                     }, 3000);
                 }
+                
             },
             error: function (jqXHR, status) {
                 alert('An unexpected error has occurred.');
@@ -77,3 +79,15 @@ $(document).on("pagecreate", "#findFriendsView", function () {
 
 
 });
+
+function refreshPage(){
+    $.mobile.changePage(
+        window.location.href,
+        {
+            allowSamePageTransition : true,
+            transition : 'none',
+            showLoadMsg : false,
+            reloadPage : true
+        }
+    );
+}

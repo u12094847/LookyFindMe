@@ -1,10 +1,3 @@
-$(document).on("pagebeforecreate", "#homePage", function () {
-    
-    var username = $.getCookie('username');  
-    
-    if (username === false) {
-        return;
-    }
+$(document).on("pagecreate", "#homePage", function () {
 
-    $.mobile.changePage('#loggedIn');
 });

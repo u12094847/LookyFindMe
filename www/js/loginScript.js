@@ -1,4 +1,6 @@
 $(document).on("pagecreate", "#login", function () {
+    $.setCookie("username", null, -1);
+    
     if (localStorage.chkbx && localStorage.chkbx != '') {
         $('#remember_me').attr('checked', 'checked');
         $('#username').val(localStorage.usrname);
@@ -50,8 +52,8 @@ function login(user) {
                 $('#loginSuccessDiv').html("<p style='color:green;text-align:center'>Welcome.</p>");
                 setTimeout(function () {
                     $('#loginSuccessDiv').html("");
-                    $.mobile.changePage('#loggedIn');
                     $.setCookie("username", user.username, 14);
+                    $.mobile.changePage('#loggedIn');
                 }, 2000);
 
             } else {

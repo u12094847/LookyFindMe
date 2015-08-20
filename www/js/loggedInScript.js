@@ -1,11 +1,14 @@
-$(document).on("pagecreate", "#loggedIn", function () {
-
+$(document).on("pageshow", "#loggedIn", function () {
     var username = $.getCookie("username");
     
-    if(!username){
-     $.mobile.changePage('#homePage');
-     return;
+    if (username === false) {
+        $.mobile.changePage('#homePage');
+        return;
     }
+    
+    $('#recentContactListView').children().remove();
+    $('#recentPendingListView').children().remove();
+    $('#recentRequestsListView').children().remove();
     
     jQuery.ajax({
         type: "POST",
@@ -76,8 +79,20 @@ $(document).on("pagecreate", "#loggedIn", function () {
             alert('An unexpected error has occurred. ' + status);
         }
     });
+    
+    $("#recentContactListView").listview('refresh');
+    $("#recentPendingListView").listview('refresh');
+    $("#recentRequestsListView").listview('refresh');
+});
 
-
+$(document).on("pagecreate", "#loggedIn", function () {
+    var username = $.getCookie("username");
+    
+    if(username === false){
+     $.mobile.changePage('#homePage');
+     return;
+    }
+    
     $('#findMeBtn').click(function () {
 
         $('#options').hide();
