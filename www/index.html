@@ -74,6 +74,7 @@
                     </form>
                     <ol data-role="listview" id="recentContactListView" data-filter="true" data-input="#filterFriends">
                     </ol>
+                    <div id="acceptedFriendConfirmBox"> </div>
                     <div id='viewAllRequests'> <button class="ui-btn" id='viewAllRequestsBtn'> REQUESTS </button> </div>
                     <form class="ui-filterable">
                         <input id="filterRequests" data-type="search">
@@ -89,6 +90,16 @@
                     <div id='settings'> <button class="ui-btn ui-icon-grid ui-btn-icon-left">SETTINGS</button> </div>
                 </div>
                 <div id='map_container' style="width:640px; height:800px;"> 
+                </div>
+            </div>
+            <div data-role="popup" id='confirmDialogAddFriend'>
+                <div data-role="header" data-theme="d" data-position="inline" class="ui-corner-top ui-overlay-shadow ui-bar-d ui-header" role="banner">
+                    <h1 class="ui-title" tabindex="0" role="heading" aria-level="1">Add Friend</h1>
+                </div>
+                <div data-role="content" data-theme="c" role="main">
+                    <h1 id='addFriendHeader'> </h1>
+                    <a id="addFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="b" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Add</span></span></a>       
+                    <a id="cancelFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Cancel</span></span></a>    
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
@@ -143,12 +154,12 @@
             </div>
             <div data-role="popup" id='confirmDialog'>
                 <div data-role="header" data-theme="d" data-position="inline" class="ui-corner-top ui-overlay-shadow ui-bar-d ui-header" role="banner">
-                    <h1 class="ui-title" tabindex="0" role="heading" aria-level="1">Add Friend</h1>
+                    <h1 class="ui-title" tabindex="0" role="heading" aria-level="1">Send Request</h1>
                 </div>
                 <div data-role="content" data-theme="c" role="main">
-                    <h1 id='addFriendHeader'> </h1>
-                    <a id="addFriend" href="#findFriendsView" data-role="button" data-rel="back" data-theme="b" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Add</span></span></a>       
-                    <a id="cancelFriend" href="#findFriendsView" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Cancel</span></span></a>    
+                    <h1 id='requestFriendHeader'> </h1>
+                    <a id="requestFriend" href="#findFriendsView" data-role="button" data-rel="back" data-theme="b" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Add</span></span></a>       
+                    <a id="cancelFriendRequest" href="#findFriendsView" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Cancel</span></span></a>    
                 </div>
             </div>
             <div data-role='footer' data-position="fixed">

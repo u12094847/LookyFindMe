@@ -32,11 +32,11 @@ $(document).on("pagecreate", "#findFriendsView", function () {
     $('#foundFriendList').delegate('li', 'tap', function () {
         var username = $(this).find('a').attr('id');
         $.setCookie("friend", username, 1);
-        $('#addFriendHeader').html("Add " + username + "?");
+        $('#requestFriendHeader').html("Send " + username + " a request?");
         $('#confirmDialog').popup("open");
     });
 
-    $('#addFriend').click(function (event) {
+    $('#requestFriend').click(function (event) {
         event.preventDefault();
 
         var friend = $.getCookie('friend').trim();
@@ -51,7 +51,6 @@ $(document).on("pagecreate", "#findFriendsView", function () {
                 if (data.success === true) {
                     $('#friendConfirmBox').html("<p style='color:green;text-align:center'>Added.</p>");
                     setTimeout(function () {
-                        refreshPage();
                         $.mobile.changePage('#loggedIn');
                     }, 1500);
                 } else {
@@ -71,23 +70,9 @@ $(document).on("pagecreate", "#findFriendsView", function () {
         $.mobile.changePage('#loggedIn');
     });
 
-    $('#addFriendHeader').click(function (event) {
+    $('#cancelFriendRequest').click(function (event) {
         event.preventDefault();
         $.setCookie('friend', null, -1);
         $.mobile.navigate(this.attr("href"));
     });
-
-
 });
-
-function refreshPage(){
-    $.mobile.changePage(
-        window.location.href,
-        {
-            allowSamePageTransition : true,
-            transition : 'none',
-            showLoadMsg : false,
-            reloadPage : true
-        }
-    );
-}

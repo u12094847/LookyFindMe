@@ -1,15 +1,15 @@
 $(document).on("pageshow", "#loggedIn", function () {
     var username = $.getCookie("username");
-    
+
     if (username === false) {
         $.mobile.changePage('#homePage');
         return;
     }
-    
+
     $('#recentContactListView').children().remove();
     $('#recentPendingListView').children().remove();
     $('#recentRequestsListView').children().remove();
-    
+
     jQuery.ajax({
         type: "POST",
         url: "http://localhost:8001/",
@@ -20,7 +20,7 @@ $(document).on("pageshow", "#loggedIn", function () {
                     $('#options').append('<p style="color:red;"> No friends. </p>');
                 } else {
                     var obj = JSON.parse(data.data);
-                    obj.forEach(function (item) {  
+                    obj.forEach(function (item) {
                         $('#recentContactListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
                     });
                 }
@@ -79,7 +79,7 @@ $(document).on("pageshow", "#loggedIn", function () {
             alert('An unexpected error has occurred. ' + status);
         }
     });
-    
+
     $("#recentContactListView").listview('refresh');
     $("#recentPendingListView").listview('refresh');
     $("#recentRequestsListView").listview('refresh');
@@ -87,12 +87,12 @@ $(document).on("pageshow", "#loggedIn", function () {
 
 $(document).on("pagecreate", "#loggedIn", function () {
     var username = $.getCookie("username");
-    
-    if(username === false){
-     $.mobile.changePage('#homePage');
-     return;
+
+    if (username === false) {
+        $.mobile.changePage('#homePage');
+        return;
     }
-    
+
     $('#findMeBtn').click(function () {
 
         $('#options').hide();
@@ -143,9 +143,50 @@ $(document).on("pagecreate", "#loggedIn", function () {
         $.setCookie("username", null, -1);
         $.mobile.changePage('#homePage');
     });
-    
-    $('recentContactListView').find('a').click(function(){
-        alert($(this).attr('id'));
-        $.mobile.changePage('#findFriendPage');
+
+    $('#recentRequestsListView').delegate('li', 'tap', function () {
+        var username = $(this).find('a').attr('id');
+        $.setCookie("friend", username, 1);
+        $('#addFriendHeader').html("Add " + username + "?");
+        $('#confirmDialogAddFriend').popup("open");
+    });
+
+    $('#addFriend').click(function (event) {
+        event.preventDefault();
+
+        var friend = $.getCookie('friend').trim();
+        var username = $.getCookie('username').trim();
+
+        jQuery.ajax({
+            type: "POST",
+            url: "http://localhost:8001/",
+            data: {method: "acceptFriend", username: username, friend: friend},
+            success: function (data, status, jqXHR) {
+                if (data.success === true) {
+                    $('#acceptedFriendConfirmBox').html("<p style='color:green;text-align:center'>Friend Added.</p>");
+                    setTimeout(function () {
+                        $('#acceptedFriendConfirmBox').html("").fadeOut();
+                    }, 1500);
+                } else {
+                    $('#acceptedFriendConfirmBox').html("<p style='color:red;text-align:center'>Friend could not be added. </p>");
+                    setTimeout(function () {
+                        $('#acceptedFriendConfirmBox').html("").fadeOut();
+                    }, 3000);
+                }
+
+            },
+            error: function (jqXHR, status) {
+                alert('An unexpected error has occurred.');
+            }
+        });
+
+        $.setCookie('friend', null, -1);
+        $.mobile.changePage('#loggedIn');
+    });
+
+    $('#cancelFriend').click(function (event) {
+        event.preventDefault();
+        $.setCookie('friend', null, -1);
+        $.mobile.navigate(this.attr("href"));
     });
 });
