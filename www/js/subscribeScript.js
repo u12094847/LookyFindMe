@@ -26,6 +26,8 @@ function addSubscriber(user) {
 }
 
 $(document).on("pagecreate", "#subscribe", function () {
+    
+    $.setCookie('username', null, -1);
 
     $('#subscribeBtn').click(function () {
         var name = $('#name').val();
