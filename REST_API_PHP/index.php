@@ -336,6 +336,36 @@ if (isset($_POST['method'])) {
             $response['status'] = 404;
             $response['success'] = false;
         }
+    }else if (strcasecmp($method, 'acceptFriend') == 0 and isset($_POST['username']) and isset($_POST['friend'])) {
+        $username = $_POST['username'];
+        $friend = $_POST['friend'];
+        // Input validations
+        if (!empty($username)) {
+            //This SQL statement gets all the usernames for a person/user
+            $sql = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$username'");
+            if (mysqli_num_rows($sql) > 0) {
+                if ($result = mysqli_fetch_row($sql)) {
+                    $sql = mysqli_query($db, "UPDATE friend SET friend_status=3 WHERE user_id = '$result[0]' and friend_one='$friend'");
+                    $sqli = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$friend'");
+                    if (mysqli_num_rows($sqli) > 0) {
+                        if ($result = mysqli_fetch_row($sqli)) {
+                            $sql = mysqli_query($db, "UPDATE friend SET friend_status=3 WHERE user_id = '$result[0]' and friend_one='$username'");
+                        }
+                        $response['success'] = true;
+                        $response['status'] = 200;
+                    } else {
+                        $response['status'] = 200;
+                        $response['success'] = true;
+                    }
+                } else {
+                    $response['status'] = 404;
+                    $response['success'] = false;
+                }
+            }
+        } else {
+            $response['status'] = 404;
+            $response['success'] = false;
+        }
     }
 }
 
