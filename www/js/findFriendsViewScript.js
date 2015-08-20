@@ -41,18 +41,18 @@ $(document).on("pagecreate", "#findFriendsView", function () {
 
         var friend = $.getCookie('friend').trim();
         var username = $.getCookie('username').trim();
-        
+
         jQuery.ajax({
             type: "POST",
             url: "http://localhost:8001/",
-            data: {method: "addFriend", username: "Mamelo", friend: "jimmy"},
+            data: {method: "addFriend", username: username, friend: friend},
             success: function (data, status, jqXHR) {
 
                 if (data.success === true) {
                     $('#friendConfirmBox').html("<p style='color:green;text-align:center'>Added.</p>");
                     setTimeout(function () {
-                        $('#friendConfirmBox').html("").fadeOut();
-                    }, 3000);
+                        $.mobile.changePage('#loggedIn');
+                    }, 1500);
                 } else {
                     $('#friendConfirmBox').html("<p style='color:red;text-align:center'>Username exists</p>");
                     setTimeout(function () {
@@ -66,7 +66,7 @@ $(document).on("pagecreate", "#findFriendsView", function () {
         });
 
         $.setCookie('friend', null, -1);
-        $.mobile.navigate($(this).attr("href"));
+        $.mobile.changePage('#loggedIn');
     });
 
     $('#addFriendHeader').click(function (event) {
