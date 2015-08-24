@@ -102,7 +102,20 @@
                     <a id="cancelFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Cancel</span></span></a>    
                 </div>
             </div>
+            <div data-role="popup" id='confirmFindFriend'>
+                <div data-role="header" data-theme="d" data-position="inline" class="ui-corner-top ui-overlay-shadow ui-bar-d ui-header" role="banner">
+                    <h1 class="ui-title" tabindex="0" role="heading" aria-level="1">Find Friend</h1>
+                </div>
+                <div data-role="content" data-theme="c" role="main">
+                    <h1 id='findFriendHeader'> </h1>
+                    <a id="findFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="b" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Yes</span></span></a>       
+                    
+                    <a id="unFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Unfriend</span></span></a>    
+                    <a id="cancelFindFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">No</span></span></a>    
+                </div>
+            </div>
             <div data-role="footer" data-position="fixed">
+                <div> <a data-rel="back" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back</a> </div>
                 <div id='logout'> <button class="ui-btn ui-icon-recycle ui-btn-icon-left"  id='logoutBtn'> Sign out </button> </div>
             </div>
         </div>
