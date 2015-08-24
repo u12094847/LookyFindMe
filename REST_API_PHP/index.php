@@ -336,7 +336,7 @@ if (isset($_POST['method'])) {
             $response['status'] = 404;
             $response['success'] = false;
         }
-    }else if (strcasecmp($method, 'acceptFriend') == 0 and isset($_POST['username']) and isset($_POST['friend'])) {
+    } else if (strcasecmp($method, 'acceptFriend') == 0 and isset($_POST['username']) and isset($_POST['friend'])) {
         $username = $_POST['username'];
         $friend = $_POST['friend'];
         // Input validations
@@ -356,6 +356,38 @@ if (isset($_POST['method'])) {
                     } else {
                         $response['status'] = 200;
                         $response['success'] = true;
+                    }
+                } else {
+                    $response['status'] = 404;
+                    $response['success'] = false;
+                }
+            }
+        } else {
+            $response['status'] = 404;
+            $response['success'] = false;
+        }
+    } else if (strcasecmp($method, 'unFriend') == 0 and isset($_POST['username']) and isset($_POST['friend'])) {
+        $username = $_POST['username'];
+        $friend = $_POST['friend'];
+        // Input validations
+        if (!empty($username)) {
+            //This SQL statement gets all the usernames for a person/user
+            $sql1 = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$username'");
+            $sql2 = mysqli_query($db, "SELECT user_id FROM user WHERE user_username='$friend'");
+            if (mysqli_num_rows($sql1) > 0 and mysqli_num_rows($sql2) > 0) {
+                if ($result1 = mysqli_fetch_row($sql1) and $result2 = mysqli_fetch_row($sql2)) {
+                    
+                    $sqlQ1 = mysqli_query($db, "DELETE FROM friend WHERE user_id = '$result1[0]' and friend_one='$friend'");
+                    $sqlQ2 = mysqli_query($db, "DELETE FROM friend WHERE user_id = '$result2[0]' and friend_one='$username'");
+                    
+                    if($sqlQ1 and $sqlQ2){
+                        $response['success'] = true;
+                        $response['status'] = 200;
+                        $response['data'] = 'deleted';
+                    }
+                    else{
+                        $response['success'] = false;
+                        $response['status'] = 404;
                     }
                 } else {
                     $response['status'] = 404;
