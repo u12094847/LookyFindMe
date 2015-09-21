@@ -143,28 +143,78 @@ $(document).on("pagecreate", "#loggedIn", function () {
         event.preventDefault();
 
         var friend = $.getCookie('friend').trim();
-        var coordinates = null;
 
-        jQuery.ajax({
-            type: "POST",
-            url: "http://localhost:8001/",
-            data: {method: "findFriend", coordinates: coordinates, friend: friend},
-            success: function (data, status, jqXHR) {
+        var lat;
+        var long;
 
-                if (data.success === true) {
+        var onSuccess = function (position) {
+            lat = position.coords.latitude;
+            long = position.coords.longitude;
+        };
 
-                } else {
+        var onError = function (error) {
+            alert("Unexpected error has occured");
+            return;
+        };
 
-                }
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
-            },
-            error: function (jqXHR, status) {
-                alert('An unexpected error has occurred.');
+        var conn = new WebSocket('ws://localhost:8002');
+
+        conn.onmessage = function (e) {
+            var message = JSON.parse(e.data);
+
+            switch (message.type) {
+                case 'accept':
+                    acceptRequest(message);
+                    break;
+                case 'sendCoordinates':
+                    sendCoordinates(message);
+                    break;
             }
-        });
+        };
+
+        function acceptRequest(message) {
+            $('#acceptFriendRequestToFindMeHeader').html(username);
+            $('#acceptFriendRequestToFindMe').popup("open");
+        }
+
+        function sendCoordinates(message) {
+
+        }
 
         $.setCookie('friend', null, -1);
         $.mobile.changePage('#loggedIn');
+    });
+
+    $('#acceptacceptFriendRequestToFindMe').click(function (event) {
+        event.preventDefault();
+        $('#acceptacceptFriendRequestToFindMe').remove();
+        $('#declineacceptFriendRequestToFindMe').remove();
+
+        $('#acceptFriendRequestToFindMeContainer').append("<a id='viewMap' href='#loggedIn' data-role='button' data-rel='back' data-theme'b' class='ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b' data-transition='pop' data-direction='reverse'><span class='ui-btn-inner ui-btn-corner-all'><span class='ui-btn-text' style='color:green;font-weight:bold'>View Map</span></span></a>");
+        $('#acceptFriendRequestToFindMeContainer').append("<a id='DisableFindMe' href='#loggedIn' data-role='button' data-rel='back' data-theme'b' class='ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b' data-transition='pop' data-direction='reverse'><span class='ui-btn-inner ui-btn-corner-all'><span class='ui-btn-text' style='color:green;font-weight:bold'>Disable</span></span></a>");
+    });
+
+    $('#declineacceptFriendRequestToFindMe').click(function (event) {
+        event.preventDefault();
+        $.mobile.navigate($(this).attr("href"));
+    });
+
+    $('#viewMap').click(function (event) {
+        event.preventDefault();
+    });
+
+    $('#DisableFindMe').click(function (event) {
+        event.preventDefault();
+
+        $('#viewMap').remove();
+        $('#DisableFindMe').remove();
+
+        $('#acceptFriendRequestToFindMeContainer').append("<a id='acceptacceptFriendRequestToFindMe' href='#loggedIn' data-role='button' data-rel='back' data-theme'b' class='ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b' data-transition='pop' data-direction='reverse'><span class='ui-btn-inner ui-btn-corner-all'><span class='ui-btn-text' style='color:green;font-weight:bold'>Accept</span></span></a>");
+        $('#acceptFriendRequestToFindMeContainer').append("<a id='declineacceptFriendRequestToFindMe' href='#loggedIn' data-role='button' data-rel='back' data-theme'b' class='ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b' data-transition='pop' data-direction='reverse'><span class='ui-btn-inner ui-btn-corner-all'><span class='ui-btn-text' style='color:green;font-weight:bold'>Decline</span></span></a>");
+        
+        $.mobile.navigate($(this).attr("href"));
     });
 
     $('#cancelFindFriend').click(function (event) {

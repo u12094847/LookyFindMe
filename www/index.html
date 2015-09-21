@@ -114,6 +114,16 @@
                     <a id="cancelFindFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">No</span></span></a>    
                 </div>
             </div>
+            <div data-role="popup" id='acceptFriendRequestToFindMe'>
+                <div data-role="header" data-theme="d" data-position="inline" class="ui-corner-top ui-overlay-shadow ui-bar-d ui-header" role="banner">
+                    <h1 class="ui-title" tabindex="0" role="heading" aria-level="1">Find Me Request</h1>
+                </div>
+                <div data-role="content" data-theme="c" role="main" id="acceptFriendRequestToFindMeContainer">
+                    <h1 id='acceptFriendRequestToFindMeHeader'> </h1>
+                    <a id="acceptacceptFriendRequestToFindMe" href="#loggedIn" data-role="button" data-rel="back" data-theme="b" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text" style="color:green;font-weight:bold">Accept</span></span></a>       
+                    <a id="declineacceptFriendRequestToFindMe" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text" style="color:red;font-weight:bold">Decline</span></span></a>     
+                </div>
+            </div>
             <div data-role="footer" data-position="fixed">
                 <div> <a data-rel="back" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back</a> </div>
                 <div id='logout'> <button class="ui-btn ui-icon-recycle ui-btn-icon-left"  id='logoutBtn'> Sign out </button> </div>
