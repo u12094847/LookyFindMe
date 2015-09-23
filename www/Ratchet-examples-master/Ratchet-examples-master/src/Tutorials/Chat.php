@@ -16,6 +16,7 @@ class Chat implements MessageComponentInterface {
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
+         
         foreach ($this->clients as $client) {
             if ($from !== $client) {
                 $client->send($msg);
