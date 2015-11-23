@@ -2,20 +2,60 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <link rel="stylesheet" type="text/css" href="css/index.css">
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-        <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
-        <script src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
-        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-        <script src="js/jCook.js"></script>
-        <script src="js/loginScript.js"></script>
-        <script src="js/loggedInScript.js"></script>
-        <script src="js/subscribeScript.js"></script>
-        <script src="js/homeScript.js"></script>
-        <script src="js/findFriendsViewScript.js"></script>
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+        <link href="css/default.css" rel="stylesheet" type="text/css" />
 
+        <style type="text/css">
+            html { height: 100% }
+            body { height: 100%; margin: 0; padding: 0 }
+        </style>
+
+        <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script> 
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDMaEJtU26f5CqGdqG2E66aam1SlLlqJtU"></script> 
+        <script type="text/javascript" src="cordova.js"></script>
+        <script>
+            $(document).ready(function () {
+                document.addEventListener("deviceready", onDeviceReady, false);
+                //for testing in Chrome browser uncomment
+                onDeviceReady();
+            });
+
+            //PhoneGap is ready function
+            function onDeviceReady() {
+                $(window).unbind();
+                $(window).bind('pageshow resize orientationchange', function (e) {
+                    max_height();
+                });
+
+                max_height();
+
+                $.getScript('js/loginScript.js');
+                $.getScript('js/subscribeScript.js');
+                $.getScript('js/exitScript.js');
+                $.getScript('js/homeScript.js');
+                $.getScript('js/loggedInScript.js');
+                $.getScript('js/findFriendsViewScript.js');
+                $.getScript('js/mapViewScript.js');
+            }
+
+            function max_height() {
+                var h = $('div[data-role="header"]').outerHeight(true);
+                var f = $('div[data-role="footer"]').outerHeight(true);
+                var w = $(window).height();
+                var c = $('div[data-role="content"]');
+                var c_h = c.height();
+                var c_oh = c.outerHeight(true);
+                var c_new = w - h - f - c_oh + c_h;
+                var total = h + f + c_oh;
+                if (c_h < c.get(0).scrollHeight) {
+                    c.height(c.get(0).scrollHeight);
+                } else {
+                    c.height(c_new);
+                }
+            }
+        </script>
         <title>LookyFindMe</title>
     </head>
     <body>
@@ -27,9 +67,18 @@
             <div data-role="main" class="ui-content">
                 <a href="#login" class="ui-btn" > Login</a>
                 <a href="#subscribe" class="ui-btn" > Subscribe</a>
-                <a href="#" class="ui-btn" id="exit"> Exit</a>
+                <a href="#exit" class="ui-btn"> Exit </a>
             </div>
-
+            <div data-role="footer">
+                <h1>LookyFindMe</h1>
+            </div>
+        </div>
+        <div data-role="page" id="exit">
+            <div data-role="header" data-position="fixed">
+                <h1>Bye ...</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+            </div>
             <div data-role="footer">
                 <h1>LookyFindMe</h1>
             </div>
@@ -87,10 +136,9 @@
                     </form>
                     <ol data-role="listview" id="recentPendingListView" data-filter="true" data-input="#filterPending">
                     </ol>
-                    <div id='settings'> <button class="ui-btn ui-icon-grid ui-btn-icon-left">SETTINGS</button> </div>
                 </div>
-                <div id='map_container' style="width:640px; height:800px;"> 
-                </div>
+            </div>
+            <div data-role="content" class="ui-content" id="map_container">
             </div>
             <div data-role="popup" id='confirmDialogAddFriend'>
                 <div data-role="header" data-theme="d" data-position="inline" class="ui-corner-top ui-overlay-shadow ui-bar-d ui-header" role="banner">
@@ -109,7 +157,7 @@
                 <div data-role="content" data-theme="c" role="main">
                     <h1 id='findFriendHeader'> </h1>
                     <a id="findFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="b" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-transition="pop" data-direction="reverse"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Yes</span></span></a>       
-                    
+
                     <a id="unFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Unfriend</span></span></a>    
                     <a id="cancelFindFriend" href="#loggedIn" data-role="button" data-rel="back" data-theme="c" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">No</span></span></a>    
                 </div>
@@ -125,7 +173,7 @@
                 </div>
             </div>
             <div data-role="footer" data-position="fixed">
-                <div> <a data-rel="back" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back</a> </div>
+                <div> <button id="backBtnForFindMe" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back</button> </div>
                 <div id='logout'> <button class="ui-btn ui-icon-recycle ui-btn-icon-left"  id='logoutBtn'> Sign out </button> </div>
             </div>
         </div>
@@ -156,7 +204,7 @@
                 </div>
             </div>
             <div data-role='footer'>
-
+                <div id='subscribeBack'> <a id="mapViewBackBtn" href="#homePage" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back</a> </div>
             </div>
         </div>
         <div data-role="page" id="findFriendsView"> 
@@ -190,7 +238,18 @@
                 <div id='findFriendslogout'> <button class="ui-btn ui-icon-recycle ui-btn-icon-left"  id='findFriendslogoutBtn'> Sign out </button> </div>
             </div>
         </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+        <div data-role="page" id="findFriendMapView"> 
+            <div data-role="header">
+                <h2> Map View </h2>
+            </div>
+            <div data-role="main">
+                <div data-role="content" class="ui-content" id="findFriendMapViewContainer">
+                </div>
+            </div>
+            <div data-role='footer' data-position="fixed">
+                <div id='mapViewBack'> <button id="mapViewBackBtn" class="ui-btn ui-icon-arrow-l ui-btn-icon-left">Back</button> </div>
+                <div id='mapViewLogout'> <button class="ui-btn ui-icon-recycle ui-btn-icon-left"  id='mapViewLogoutBtn'> Sign out </button> </div>
+            </div>
+        </div>
     </body>
 </html>

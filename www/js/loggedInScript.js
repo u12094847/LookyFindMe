@@ -1,4 +1,4 @@
-var conn = new WebSocket('ws://localhost:8080');
+var conn = new WebSocket('ws://192.168.163.1:8080');
 
 conn.onopen = function (e) {
     console.log("Connection established!");
@@ -10,11 +10,15 @@ conn.onmessage = function (e) {
     switch (message.type) {
         case 'request':
             receiveRequest(message);
+            break;
         case 'accept':
             acceptRequest(message);
             break;
+        case 'sync':
+            syncRequest(message);
+            break;
         case 'coordinates':
-            sendCoordinates(message);
+            coordinatesRequest(message);
             break;
     }
 };
@@ -23,18 +27,52 @@ conn.onclose = function (e) {
     console.log("Connection is closed!");
 };
 
+function coordinatesRequest(message) {
+
+    var myUsername = localStorage.username;
+    var friend = message.username;
+
+    if (myUsername.toLowerCase() === message.friend.toLowerCase()) {
+
+        if (navigator.geolocation) {
+            function onSuccess(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                message = {type: "coordinates", username: myUsername, friend: friend, lat: latitude, long: longitude};
+                var coordinatesObject = JSON.stringify(message);
+                conn.send(coordinatesObject);
+            }
+
+            function onError(err) {
+                if (err.code === 1) {
+                    console.log("Error: Access is denied!");
+                }
+
+                else if (err.code === 2) {
+                    console.log("Error: Position is unavailable!");
+                }
+            }
+
+            var options = {timeout: 31000, enableHighAccuracy: true, maximumAge: 90000};
+            navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+        }
+    }
+
+}
+
 function receiveRequest(message) {
-    var friend = message.friend;
-    var username = message.username;
+    var friend = message.friend.toLowerCase();
+    var username = message.username.toLowerCase();
 
-    var myUsername = $.getCookie("username");
+    var myUsername = localStorage.username;
 
-    if (friend === myUsername) {
+    if (friend === myUsername.toLowerCase()) {
         message = {type: "accept", username: myUsername, friend: username};
         var acceptObject = JSON.stringify(message);
         conn.send(acceptObject);
     } else {
-        return;
+        console.log(friend + " and " + myUsername + " did not match.");
     }
 }
 
@@ -42,77 +80,48 @@ function acceptRequest(message) {
     var username = message.username.toLowerCase();
     var friend = message.friend.toLowerCase();
 
-    var myUsername = $.getCookie("username").toLowerCase();
+    var myUsername = localStorage.username.toLowerCase();
 
     if (friend === myUsername) {
 
-        function showLocation(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
+        localStorage.username = friend;
+        localStorage.friend = username;
 
-            message = {type: "coordinates", username: myUsername, friend: username, lat: latitude, long: longitude};
-            var coordinatesObject = JSON.stringify(message);
-            conn.send(coordinatesObject);
-        }
-
-        function errorHandler(err) {
-            if (err.code == 1) {
-                alert("Error: Access is denied!");
-            }
-
-            else if (err.code == 2) {
-                alert("Error: Position is unavailable!");
-            }
-        }
-
-        if (navigator.geolocation) {
-            // timeout at 60000 milliseconds (60 seconds)
-            var options = {timeout: 2500};
-            geoLoc = navigator.geolocation;
-            watchID = geoLoc.watchPosition(showLocation, errorHandler, options);
-        } else {
-            console.log("Browser does not support geolocation");
-        }
+        conn = conn.close();
+        $.mobile.changePage('#findFriendMapView');
+    } else {
+        console.log(friend + " and " + myUsername + " do not match.");
     }
 }
 
-function sendCoordinates(message) {
-    var myUsername = $.getCookie("username");
+function syncRequest(message) {
+    var myUsername = localStorage.username;
+    var friend = message.username;
 
     if (myUsername.toLowerCase() === message.friend.toLowerCase()) {
-        function showLocation(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-
-            message = {type: "coordinates", username: myUsername, friend: message.username, lat: latitude, long: longitude};
-            var coordinatesObject = JSON.stringify(message);
-            conn.send(coordinatesObject);
-            console.log("username " + myUsername);
-        }
-
-        function errorHandler(err) {
-            if (err.code == 1) {
-                alert("Error: Access is denied!");
-            }
-
-            else if (err.code == 2) {
-                alert("Error: Position is unavailable!");
-            }
-        }
-
         if (navigator.geolocation) {
-            // timeout at 60000 milliseconds (60 seconds)
-            var options = {timeout: 2500};
-            geoLoc = navigator.geolocation;
-            watchID = geoLoc.watchPosition(showLocation, errorHandler, options);
-        } else {
-            console.log("Browser does not support geolocation");
+            var onSuccess = function (position) {
+                var lat = position.coords.latitude;
+                var long = position.coords.longitude;
+
+                message = {type: "initialize", username: myUsername, friend: friend, lat: lat, long: long};
+                var coordinatesObject = JSON.stringify(message);
+                conn.send(coordinatesObject);
+            };
+
+            function onError(error) {
+                console.log("No geo-location support");
+            }
+
+            var options = {timeout: 31000, enableHighAccuracy: true, maximumAge: 90000};
+            navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
         }
     }
 }
 
+
 $(document).on("pageshow", "#loggedIn", function () {
-    var username = $.getCookie("username");
+    var username = localStorage.username;
 
     if (username === false) {
         $.mobile.changePage('#homePage');
@@ -132,19 +141,30 @@ $(document).on("pageshow", "#loggedIn", function () {
 });
 
 $(document).on("pagecreate", "#loggedIn", function () {
-    var username = $.getCookie("username");
+    var username = localStorage.username;
 
     if (username === false) {
         $.mobile.changePage('#homePage');
         return;
     }
 
+    $('#backBtnForFindMe').hide();
+
+    $('#backBtnForFindMe').click(function () {
+        $('#map_container').html("");
+        $('#map_container').hide();
+        $('#backBtnForFindMe').hide();
+        $('#options').show();
+        $.mobile.changePage('#loggedIn');
+    });
+
     $('#findMeBtn').click(function () {
 
+        $('#backBtnForFindMe').show();
         $('#options').hide();
+        $('#map_container').show();
 
         var map;
-
         var mapOptions = {
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -179,34 +199,40 @@ $(document).on("pagecreate", "#loggedIn", function () {
 
         function onError(error) {
             document.getElementById('map_container').innerHTML = 'No Geolocation Support.';
-
         }
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
 
+        var options = {timeout: 31000, enableHighAccuracy: true, maximumAge: 90000};
+        navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
     });
 
     $('#logoutBtn').click(function () {
-        $.setCookie("username", null, -1);
+        localStorage.username = null;
         $.mobile.changePage('#homePage');
     });
 
     $('#recentRequestsListView').delegate('li', 'tap', function () {
-        s
-        var username = $(this).find('a').attr('id');
-        $.setCookie("friend", username, 1);
-        $('#addFriendHeader').html("Add " + username + "?");
-        $('#confirmDialogAddFriend').popup("open");
+        var friend = localStorage.friend.trim();
+        var username = localStorage.username;
+        var type = "request";
+
+        message = {type: type, username: username, friend: friend};
+        var requestObject = JSON.stringify(message);
+
+        conn.send(requestObject);
+
+        localStorage.friend = null;
+        $.mobile.changePage('#loggedIn');
     });
 
     $('#addFriend').click(function (event) {
-        event.preventDefault();
+        event.defaultPrevent;
 
-        var friend = $.getCookie('friend').trim();
-        var username = $.getCookie('username').trim();
+        var friend = localStorage.friend.trim();
+        var username = localStorage.username.trim();
 
         jQuery.ajax({
             type: "POST",
-            url: "http://localhost:8001/",
+            url: "http://192.168.163.1:8001/",
             data: {method: "acceptFriend", username: username, friend: friend},
             success: function (data, status, jqXHR) {
                 if (data.success === true) {
@@ -236,29 +262,22 @@ $(document).on("pagecreate", "#loggedIn", function () {
             }
         });
 
-        $.setCookie('friend', null, -1);
+        localStorage.friend = null;
         $.mobile.changePage('#loggedIn');
     });
 
     $('#cancelFriend').click(function (event) {
         event.preventDefault();
-        $.setCookie('friend', null, -1);
+        localStorage.friend = null;
         $.mobile.navigate($(this).attr("href"));
     });
 
     $('#recentContactListView').delegate('li', 'tap', function () {
         var username = $(this).find('a').attr('id');
-        $.setCookie("friend", username, 1);
-        $('#findFriendHeader').html("Find " + username + "?");
-        $('#confirmFindFriend').popup("open");
-    });
+        localStorage.friend = username;
 
-
-    $('#findFriend').click(function (event) {
-        event.preventDefault();
-
-        var friend = $.getCookie('friend').trim();
-        var username = $.getCookie("username");
+        var friend = localStorage.friend.trim();
+        var username = localStorage.username;
         var type = "request";
 
         message = {type: type, username: username, friend: friend};
@@ -266,7 +285,24 @@ $(document).on("pagecreate", "#loggedIn", function () {
 
         conn.send(requestObject);
 
-        $.setCookie('friend', null, -1);
+        localStorage.friend = null;
+        $.mobile.changePage('#loggedIn');
+    });
+
+
+    $('#findFriend').click(function (event) {
+        event.preventDefault();
+
+        var friend = localStorage.friend.trim();
+        var username = localStorage.username;
+        var type = "request";
+
+        message = {type: type, username: username, friend: friend};
+        var requestObject = JSON.stringify(message);
+
+        conn.send(requestObject);
+
+        localStorage.friend = null;
         $.mobile.changePage('#loggedIn');
     });
 
@@ -302,19 +338,19 @@ $(document).on("pagecreate", "#loggedIn", function () {
 
     $('#cancelFindFriend').click(function (event) {
         event.preventDefault();
-        $.setCookie('friend', null, -1);
+        localStorage.friend = null;
         $.mobile.navigate($(this).attr("href"));
     });
 
     $('#unFriend').click(function (event) {
         event.preventDefault();
 
-        var friend = $.getCookie('friend');
-        var username = $.getCookie('username');
+        var friend = localStorage.friend;
+        var username = localStorage.username;
 
         jQuery.ajax({
             type: "POST",
-            url: "http://localhost:8001/",
+            url: "http://192.168.163.1:8001/",
             data: {method: "unFriend", username: username, friend: friend},
             success: function (data, status, jqXHR) {
                 if (data.success === true) {
@@ -341,7 +377,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
                 alert('An unexpected error has occurred.');
             }
         });
-        $.setCookie('friend', null, -1);
+        localStorage.friend = null;
         $.mobile.navigate($(this).attr("href"));
     });
 });
@@ -350,30 +386,32 @@ $(document).on("pagecreate", "#loggedIn", function () {
 function loadLists(username) {
     jQuery.ajax({
         type: "POST",
-        url: "http://localhost:8001/",
+        url: "http://192.168.163.1:8001/",
         data: {method: "getfriends", username: username},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
                 if (data.data === null) {
                     $('#options').append('<p style="color:red;"> No friends. </p>');
                 } else {
-                    var obj = JSON.parse(data.data);
-                    obj.forEach(function (item) {
-                        $('#recentContactListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
-                    });
+                    if (data.data.trim()) {
+                        var obj = JSON.parse(data.data);
+                        obj.forEach(function (item) {
+                            $('#recentContactListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
+                        });
+                    }
                 }
             } else {
                 $('#options').append('<p> No friends. </p>');
             }
         },
-        error: function (jqXHR, status) {
-            alert('An unexpected error has occurred. ' + status);
+        error: function (response, status, t) {
+            alert('An unexpected error has occurred.' + response.responseText + " Status: " + status);
         }
     });
 
     jQuery.ajax({
         type: "POST",
-        url: "http://localhost:8001/",
+        url: "http://192.168.163.1:8001/",
         data: {method: "getPending", username: username},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
@@ -391,15 +429,15 @@ function loadLists(username) {
                 $('#options').append('<p> No pending friends. </p>');
             }
         },
-        error: function (jqXHR, status) {
-            alert('An unexpected error has occurred. ' + status);
+        error: function (response, status, t) {
+            alert('An unexpected error has occurred.' + response.responseText + " Status: " + status);
         }
     });
 
 
     jQuery.ajax({
         type: "POST",
-        url: "http://localhost:8001/",
+        url: "http://192.168.163.1:8001/",
         data: {method: "getRequests", username: username},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
@@ -417,9 +455,8 @@ function loadLists(username) {
                 $('#options').append('<p> No requests. </p>');
             }
         },
-        error: function (jqXHR, status) {
-            alert('An unexpected error has occurred. ' + status);
+        error: function (response, status, t) {
+            alert('An unexpected error has occurred.' + response.responseText + " Status: " + status);
         }
     });
 }
-;

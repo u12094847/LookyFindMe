@@ -7,7 +7,7 @@ $(document).on("pagecreate", "#findFriendsView", function () {
 
         jQuery.ajax({
             type: "POST",
-            url: "http://localhost:8001/",
+            url: "http://192.168.163.1:8001/",
             data: {method: "searchFriend", username: searchItem},
             success: function (data, status, jqXHR) {
                 if (data.success === true) {
@@ -31,7 +31,7 @@ $(document).on("pagecreate", "#findFriendsView", function () {
 
     $('#foundFriendList').delegate('li', 'tap', function () {
         var username = $(this).find('a').attr('id');
-        $.setCookie("friend", username, 1);
+        localStorage.friend = username;
         $('#requestFriendHeader').html("Send " + username + " a request?");
         $('#confirmDialog').popup("open");
     });
@@ -39,12 +39,12 @@ $(document).on("pagecreate", "#findFriendsView", function () {
     $('#requestFriend').click(function (event) {
         event.preventDefault();
 
-        var friend = $.getCookie('friend').trim();
-        var username = $.getCookie('username').trim();
+        var friend = localStorage.friend;
+        var username = localStorage.username;
 
         jQuery.ajax({
             type: "POST",
-            url: "http://localhost:8001/",
+            url: "http://192.168.163.1:8001/",
             data: {method: "addFriend", username: username, friend: friend},
             success: function (data, status, jqXHR) {
 
@@ -59,20 +59,20 @@ $(document).on("pagecreate", "#findFriendsView", function () {
                         $('#friendConfirmBox').html("").fadeOut();
                     }, 3000);
                 }
-                
+
             },
             error: function (jqXHR, status) {
                 alert('An unexpected error has occurred.');
             }
         });
 
-        $.setCookie('friend', null, -1);
+        localStorage.friend = null;
         $.mobile.changePage('#loggedIn');
     });
 
     $('#cancelFriendRequest').click(function (event) {
         event.preventDefault();
-        $.setCookie('friend', null, -1);
+        localStorage.friend = null;
         $.mobile.navigate(this.attr("href"));
     });
 });

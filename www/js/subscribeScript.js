@@ -3,16 +3,16 @@ function userSubscribeDetails(name, surname, username, password) {
     this.surname = surname;
     this.username = username;
     this.password = password;
-};
+}
 
 function addSubscriber(user) {
     jQuery.ajax({
         type: "POST",
-        url: "http://localhost:8001/",
+        url: "http://192.168.163.1:8001/",
         data: {method: "subscribe", username: user.username, password: user.password, name: user.name, surname: user.surname},
         success: function (data, status, jqXHR) {
             if (data.success === true) {
-                $.setCookie("username", user.username, 14);
+                localStorage.username = user.username;
                 $.mobile.changePage('#loggedIn');
             } else {
                 $.mobile.changePage('#homePage');
@@ -26,8 +26,8 @@ function addSubscriber(user) {
 }
 
 $(document).on("pagecreate", "#subscribe", function () {
-    
-    $.setCookie('username', null, -1);
+
+    localStorage.username = null;
 
     $('#subscribeBtn').click(function () {
         var name = $('#name').val();

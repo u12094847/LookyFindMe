@@ -1,6 +1,6 @@
 $(document).on("pagecreate", "#login", function () {
-    $.setCookie("username", null, -1);
-    
+    localStorage.username = null;
+
     if (localStorage.chkbx && localStorage.chkbx != '') {
         $('#remember_me').attr('checked', 'checked');
         $('#username').val(localStorage.usrname);
@@ -39,12 +39,11 @@ function UserLogin(username, password) {
     this.username = username;
     this.password = password;
 }
-;
 
 function login(user) {
     jQuery.ajax({
         type: "POST",
-        url: "http://localhost:8001/",
+        url: "http://192.168.163.1:8001/",
         data: {method: "login", username: user.username, password: user.password},
         success: function (data, status, jqXHR) {
 
@@ -52,7 +51,7 @@ function login(user) {
                 $('#loginSuccessDiv').html("<p style='color:green;text-align:center'>Welcome.</p>");
                 setTimeout(function () {
                     $('#loginSuccessDiv').html("");
-                    $.setCookie("username", user.username, 14);
+                    localStorage.username = user.username;
                     $.mobile.changePage('#loggedIn');
                 }, 2000);
 
@@ -63,9 +62,8 @@ function login(user) {
                 }, 3000);
             }
         },
-        error: function (jqXHR, status) {
-            alert('An unexpected error has occurred.' + jqXHR + " Status: " + status);
+        error: function (response, status, t) {
+            alert('An unexpected error has occurred.' + response.responseText + " Status: " + status);
         }
     });
 }
-;
