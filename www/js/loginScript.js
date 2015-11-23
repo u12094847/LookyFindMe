@@ -64,7 +64,7 @@ function login(user) {
             }
         },
         error: function (jqXHR, status) {
-            alert('An unexpected error has occurred.');
+            alert('An unexpected error has occurred.' + jqXHR + " Status: " + status);
         }
     });
 }

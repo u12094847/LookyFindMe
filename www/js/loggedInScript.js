@@ -1,3 +1,116 @@
+var conn = new WebSocket('ws://localhost:8080');
+
+conn.onopen = function (e) {
+    console.log("Connection established!");
+};
+
+conn.onmessage = function (e) {
+    var message = JSON.parse(e.data);
+
+    switch (message.type) {
+        case 'request':
+            receiveRequest(message);
+        case 'accept':
+            acceptRequest(message);
+            break;
+        case 'coordinates':
+            sendCoordinates(message);
+            break;
+    }
+};
+
+conn.onclose = function (e) {
+    console.log("Connection is closed!");
+};
+
+function receiveRequest(message) {
+    var friend = message.friend;
+    var username = message.username;
+
+    var myUsername = $.getCookie("username");
+
+    if (friend === myUsername) {
+        message = {type: "accept", username: myUsername, friend: username};
+        var acceptObject = JSON.stringify(message);
+        conn.send(acceptObject);
+    } else {
+        return;
+    }
+}
+
+function acceptRequest(message) {
+    var username = message.username.toLowerCase();
+    var friend = message.friend.toLowerCase();
+
+    var myUsername = $.getCookie("username").toLowerCase();
+
+    if (friend === myUsername) {
+
+        function showLocation(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+
+            message = {type: "coordinates", username: myUsername, friend: username, lat: latitude, long: longitude};
+            var coordinatesObject = JSON.stringify(message);
+            conn.send(coordinatesObject);
+        }
+
+        function errorHandler(err) {
+            if (err.code == 1) {
+                alert("Error: Access is denied!");
+            }
+
+            else if (err.code == 2) {
+                alert("Error: Position is unavailable!");
+            }
+        }
+
+        if (navigator.geolocation) {
+            // timeout at 60000 milliseconds (60 seconds)
+            var options = {timeout: 2500};
+            geoLoc = navigator.geolocation;
+            watchID = geoLoc.watchPosition(showLocation, errorHandler, options);
+        } else {
+            console.log("Browser does not support geolocation");
+        }
+    }
+}
+
+function sendCoordinates(message) {
+    var myUsername = $.getCookie("username");
+
+    if (myUsername.toLowerCase() === message.friend.toLowerCase()) {
+        function showLocation(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+
+            message = {type: "coordinates", username: myUsername, friend: message.username, lat: latitude, long: longitude};
+            var coordinatesObject = JSON.stringify(message);
+            conn.send(coordinatesObject);
+            console.log("username " + myUsername);
+        }
+
+        function errorHandler(err) {
+            if (err.code == 1) {
+                alert("Error: Access is denied!");
+            }
+
+            else if (err.code == 2) {
+                alert("Error: Position is unavailable!");
+            }
+        }
+
+        if (navigator.geolocation) {
+            // timeout at 60000 milliseconds (60 seconds)
+            var options = {timeout: 2500};
+            geoLoc = navigator.geolocation;
+            watchID = geoLoc.watchPosition(showLocation, errorHandler, options);
+        } else {
+            console.log("Browser does not support geolocation");
+        }
+    }
+}
+
 $(document).on("pageshow", "#loggedIn", function () {
     var username = $.getCookie("username");
 
@@ -15,6 +128,7 @@ $(document).on("pageshow", "#loggedIn", function () {
     $("#recentContactListView").listview('refresh');
     $("#recentPendingListView").listview('refresh');
     $("#recentRequestsListView").listview('refresh');
+
 });
 
 $(document).on("pagecreate", "#loggedIn", function () {
@@ -77,6 +191,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
     });
 
     $('#recentRequestsListView').delegate('li', 'tap', function () {
+        s
         var username = $(this).find('a').attr('id');
         $.setCookie("friend", username, 1);
         $('#addFriendHeader').html("Add " + username + "?");
@@ -143,45 +258,13 @@ $(document).on("pagecreate", "#loggedIn", function () {
         event.preventDefault();
 
         var friend = $.getCookie('friend').trim();
+        var username = $.getCookie("username");
+        var type = "request";
 
-        var lat;
-        var long;
+        message = {type: type, username: username, friend: friend};
+        var requestObject = JSON.stringify(message);
 
-        var onSuccess = function (position) {
-            lat = position.coords.latitude;
-            long = position.coords.longitude;
-        };
-
-        var onError = function (error) {
-            alert("Unexpected error has occured");
-            return;
-        };
-
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
-
-        var conn = new WebSocket('ws://localhost:8002');
-
-        conn.onmessage = function (e) {
-            var message = JSON.parse(e.data);
-
-            switch (message.type) {
-                case 'accept':
-                    acceptRequest(message);
-                    break;
-                case 'sendCoordinates':
-                    sendCoordinates(message);
-                    break;
-            }
-        };
-
-        function acceptRequest(message) {
-            $('#acceptFriendRequestToFindMeHeader').html(username);
-            $('#acceptFriendRequestToFindMe').popup("open");
-        }
-
-        function sendCoordinates(message) {
-
-        }
+        conn.send(requestObject);
 
         $.setCookie('friend', null, -1);
         $.mobile.changePage('#loggedIn');
@@ -213,7 +296,7 @@ $(document).on("pagecreate", "#loggedIn", function () {
 
         $('#acceptFriendRequestToFindMeContainer').append("<a id='acceptacceptFriendRequestToFindMe' href='#loggedIn' data-role='button' data-rel='back' data-theme'b' class='ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b' data-transition='pop' data-direction='reverse'><span class='ui-btn-inner ui-btn-corner-all'><span class='ui-btn-text' style='color:green;font-weight:bold'>Accept</span></span></a>");
         $('#acceptFriendRequestToFindMeContainer').append("<a id='declineacceptFriendRequestToFindMe' href='#loggedIn' data-role='button' data-rel='back' data-theme'b' class='ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b' data-transition='pop' data-direction='reverse'><span class='ui-btn-inner ui-btn-corner-all'><span class='ui-btn-text' style='color:green;font-weight:bold'>Decline</span></span></a>");
-        
+
         $.mobile.navigate($(this).attr("href"));
     });
 
@@ -297,10 +380,12 @@ function loadLists(username) {
                 if (data.data === null) {
                     $('#options').append('<p style="color:red;"> No pending friends. </p>');
                 } else {
-                    var obj = JSON.parse(data.data);
-                    obj.forEach(function (item) {
-                        $('#recentPendingListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
-                    });
+                    if (!$.isEmptyObject(data.data)) {
+                        var obj = JSON.parse(data.data);
+                        obj.forEach(function (item) {
+                            $('#recentPendingListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
+                        });
+                    }
                 }
             } else {
                 $('#options').append('<p> No pending friends. </p>');
@@ -321,10 +406,12 @@ function loadLists(username) {
                 if (data.data === null) {
                     $('#options').append('<p style="color:red;"> No requests. </p>');
                 } else {
-                    var obj = JSON.parse(data.data);
-                    obj.forEach(function (item) {
-                        $('#recentRequestsListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
-                    });
+                    if (!$.isEmptyObject(data.data)) {
+                        var obj = JSON.parse(data.data);
+                        obj.forEach(function (item) {
+                            $('#recentRequestsListView').append("<li><a href='#' class='ui-btn' id=" + item + ">" + item + "</a></li>");
+                        });
+                    }
                 }
             } else {
                 $('#options').append('<p> No requests. </p>');
